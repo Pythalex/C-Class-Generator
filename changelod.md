@@ -1,8 +1,8 @@
-#Changelog
+# Changelog
 
 ---
 
-###Actual version : 1
+### Actual version : 1
 The generator is functional for basic class creations.<br/>
 Features supported : <br/>
         Limited documentation (Author, date, class role)<br/>
@@ -10,5 +10,5 @@ Features supported : <br/>
         Constructor (only default) and Destructor<br/>
         Header single inclusion macro
 
-#####TODO : 
+##### TODO : 
 File creation, date format. 
