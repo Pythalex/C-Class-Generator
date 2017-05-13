@@ -15,6 +15,13 @@
 #include <QDateEdit>
 #include <QColor>
 #include <QPalette>
+#include <QTabWidget>
+#include <QPushButton>
+#include <QDir>
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include <fstream>
 
 class MainWindow : public QWidget{
 
@@ -28,6 +35,10 @@ class MainWindow : public QWidget{
 
     private slots:
     void updateCode();
+    void updateCodeHeader();
+    void updateCodeCpp();
+
+    void saveFiles();
 
     private:
 
@@ -67,11 +78,19 @@ class MainWindow : public QWidget{
     void Init_DateEdit();
     void Init_RoleEdit();
 
-    void Init_CodeBlockGroup();
-    void Init_CodeBlockLayout();
+    void Init_SaveFileButton();
+
+    void Init_CodeBlockTab();
     void Init_CodeUpdateTimer();
     void Init_CodeBlockFont();
-    void Init_CodeBlock();
+
+    void Init_HeaderPage();
+    void Init_CodeBlockLayoutHeader();
+    void Init_CodeBlockHeader();
+
+    void Init_CppPage();
+    void Init_CodeBlockLayoutCpp();
+    void Init_CodeBlockCpp();
 
 
     /// Attributes
@@ -79,7 +98,7 @@ class MainWindow : public QWidget{
     // Frames
     QGridLayout* _mainFrame;
 
-    QVBoxLayout* _subMainFrame1; // user data frame
+    QVBoxLayout* _subMainFrame1;
     QVBoxLayout*  _subMainFrame2; // generated code display frame
 
     // User Data
@@ -108,13 +127,27 @@ class MainWindow : public QWidget{
     QDateEdit*   _dateEdit;
     QTextEdit*   _roleEdit;
 
+    // File Save button
+    QPushButton* _saveFileButton;
+    QIcon*       _saveIcon;
+
     // Generated code
     QTimer*      _codeUpdateTimer;
-    QGroupBox*   _codeBlockGroup;
-    QVBoxLayout* _codeBlockLayout;
-    QTextEdit*   _codeBlock;
     QFont*       _codeBlockFont;
-    QString*     _generatedCode;
+
+    QTabWidget*  _codeBlockTab;
+
+    QWidget*     _headerPage;
+    QVBoxLayout* _codeBlockLayoutHeader;
+    QTextEdit*   _codeBlockHeader;
+    QString*     _generatedCodeHeader;
+
+    QWidget*     _cppPage;
+    QVBoxLayout* _codeBlockLayoutCpp;
+    QTextEdit*   _codeBlockCpp;
+    QString*     _generatedCodeCpp;
+
+
 };
 
 #endif

@@ -13,6 +13,7 @@
 int main(int argc, char* argv[]){
 
     QApplication application(argc, argv);
+    QDir::setCurrent(QCoreApplication::applicationDirPath()); // relative path
 
     MainWindow* mainWin = new MainWindow();
 

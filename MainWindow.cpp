@@ -33,12 +33,22 @@ MainWindow::MainWindow(){
     _dateEdit = new QDateEdit;
     _roleEdit = new QTextEdit;
 
+    _saveFileButton = new QPushButton;
+    _saveIcon = new QIcon;
+
     _codeUpdateTimer = new QTimer;
-    _codeBlockGroup = new QGroupBox;
-    _codeBlockLayout = new QVBoxLayout;
-    _codeBlock = new QTextEdit;
+    _codeBlockTab = new QTabWidget;
     _codeBlockFont = new QFont;
-    _generatedCode = new QString;
+
+    _headerPage = new QWidget;
+    _codeBlockLayoutHeader = new QVBoxLayout;
+    _codeBlockHeader = new QTextEdit;
+    _generatedCodeHeader = new QString;
+
+    _cppPage = new QWidget;
+    _codeBlockLayoutCpp = new QVBoxLayout;
+    _codeBlockCpp = new QTextEdit;
+    _generatedCodeCpp = new QString;
 
     Init_Attributes();
 
@@ -98,17 +108,37 @@ MainWindow::~MainWindow(){
     if (_roleEdit != nullptr)
         delete _roleEdit; _roleEdit = nullptr;
 
+    // Save button
+    if (_saveFileButton != nullptr)
+        delete _saveFileButton; _saveFileButton = nullptr;
+    if (_saveIcon != nullptr)
+        delete _saveIcon; _saveIcon = nullptr;
+
     // Generated code
     if (_codeUpdateTimer != nullptr)
         delete _codeUpdateTimer; _codeUpdateTimer = nullptr;
-    if (_codeBlockGroup != nullptr)
-        delete _codeBlockGroup; _codeBlockGroup = nullptr;
-    if (_codeBlockLayout != nullptr)
-        delete _codeBlockLayout; _codeBlockLayout = nullptr;
-    if (_codeBlock != nullptr)
-        delete _codeBlock; _codeBlock = nullptr;
-    if (_generatedCode != nullptr)
-        delete _generatedCode; _generatedCode = nullptr;
+    if (_codeBlockTab != nullptr)
+        delete _codeBlockTab; _codeBlockTab = nullptr;
+
+        // header
+    if (_headerPage != nullptr)
+        delete _headerPage; _headerPage = nullptr;
+    if (_codeBlockLayoutHeader != nullptr)
+        delete _codeBlockLayoutHeader; _codeBlockLayoutHeader = nullptr;
+    if (_codeBlockHeader != nullptr)
+        delete _codeBlockHeader; _codeBlockHeader = nullptr;
+    if (_generatedCodeHeader != nullptr)
+        delete _generatedCodeHeader; _generatedCodeHeader = nullptr;
+
+        // Cpp
+    if (_cppPage != nullptr)
+        delete _cppPage; _cppPage = nullptr;
+    if (_codeBlockLayoutCpp != nullptr)
+        delete _codeBlockLayoutCpp; _codeBlockLayoutCpp = nullptr;
+    if (_codeBlockCpp != nullptr)
+        delete _codeBlockCpp; _codeBlockCpp = nullptr;
+    if (_generatedCodeCpp != nullptr)
+        delete _generatedCodeCpp; _generatedCodeCpp = nullptr;
 
 }
 
@@ -120,7 +150,6 @@ void MainWindow::Init_Attributes(){
 
     Init_SubMainFrames();
 
-    Init_UserDataArea();
 }
 
 
@@ -142,18 +171,22 @@ void MainWindow::Init_SubMainFrame1(){
     _subMainFrame1->setParent(_mainFrame);
     _subMainFrame1->setObjectName("Sub Main Frame 1");
 
+     Init_UserDataArea();
+     Init_SaveFileButton();
+
     _subMainFrame1->addWidget(_userDataMainGroup);
     _subMainFrame1->addWidget(_userDataOptionsGroup);
     _subMainFrame1->addWidget(_userDataDocGroup);
+    _subMainFrame1->addWidget(_saveFileButton);
 }
 
 void MainWindow::Init_SubMainFrame2(){
     _subMainFrame2->setParent(_mainFrame);
     _subMainFrame2->setObjectName("Sub Main Frame 2");
 
-    Init_CodeBlockGroup();
+    Init_CodeBlockTab();
 
-    _subMainFrame2->addWidget(_codeBlockGroup);
+    _subMainFrame2->addWidget(_codeBlockTab);
 }
 
 void MainWindow::Init_UserDataArea(){
@@ -282,31 +315,27 @@ void MainWindow::Init_RoleEdit(){
 }
 
 
-void MainWindow::Init_CodeBlockGroup(){
-    _codeBlockGroup->setObjectName("Code Block Group");
-    _codeBlockGroup->setTitle("Code");
+void MainWindow::Init_SaveFileButton(){
+    _saveFileButton->setObjectName("Save File Button");
 
-    Init_CodeBlockLayout();
+    _saveFileButton->setText("Save as");
+    *_saveIcon = QIcon("Icons/save.png");
+    _saveFileButton->setIcon(*_saveIcon);
 
-    _codeBlockGroup->setLayout(_codeBlockLayout);
+    this->connect(_saveFileButton, SIGNAL(clicked(bool)), this, SLOT(saveFiles()));
 }
 
-void MainWindow::Init_CodeBlockLayout(){
-    _codeBlockLayout->setObjectName("Code Block Layout");
 
-    Init_CodeBlock();
+void MainWindow::Init_CodeBlockTab(){
+    _codeBlockTab->setObjectName("Code Block Tab");
+
+    Init_HeaderPage();
+    Init_CppPage();
     Init_CodeUpdateTimer();
     Init_CodeBlockFont();
 
-    _codeBlockLayout->addWidget(_codeBlock, 0, 0);
-}
-
-void MainWindow::Init_CodeBlock(){
-    _codeBlock->setObjectName("Code Block");
-    _codeBlock->setTextColor("#efefef");
-    QPalette p = _codeBlock->palette();
-    p.setColor(QPalette::Base, "#2d2d2d");
-    _codeBlock->setPalette(p);
+    _codeBlockTab->addTab(_headerPage, "Header");
+    _codeBlockTab->addTab(_cppPage, "Cpp impl.");
 }
 
 void MainWindow::Init_CodeBlockFont(){
@@ -320,52 +349,156 @@ void MainWindow::Init_CodeUpdateTimer(){
     _codeUpdateTimer->start(100);
 }
 
+
+void MainWindow::Init_HeaderPage(){
+    _headerPage->setObjectName("Header Page");
+
+    Init_CodeBlockLayoutHeader();
+
+    _headerPage->setLayout(_codeBlockLayoutHeader);
+}
+
+void MainWindow::Init_CodeBlockLayoutHeader(){
+    _codeBlockLayoutHeader->setObjectName("Code Block Layout Header");
+
+    Init_CodeBlockHeader();
+
+    _codeBlockLayoutHeader->addWidget(_codeBlockHeader, 0, 0);
+}
+
+void MainWindow::Init_CodeBlockHeader(){
+    _codeBlockHeader->setObjectName("Code Block Header");
+
+    _codeBlockHeader->setTextColor("#efefef");
+
+    QPalette p = _codeBlockHeader->palette();
+    p.setColor(QPalette::Base, "#2d2d2d");
+    _codeBlockHeader->setPalette(p);
+}
+
+
+void MainWindow::Init_CppPage(){
+    _cppPage->setObjectName("Cpp Page");
+
+    Init_CodeBlockLayoutCpp();
+
+    _cppPage->setLayout(_codeBlockLayoutCpp);
+}
+
+void MainWindow::Init_CodeBlockLayoutCpp(){
+    _codeBlockLayoutCpp->setObjectName("Code Block Layout Cpp");
+
+    Init_CodeBlockCpp();
+
+    _codeBlockLayoutCpp->addWidget(_codeBlockCpp, 0, 0);
+}
+
+void MainWindow::Init_CodeBlockCpp(){
+    _codeBlockCpp->setObjectName("Code Block Cpp");
+
+    _codeBlockCpp->setTextColor("#efefef");
+
+    QPalette p = _codeBlockCpp->palette();
+    p.setColor(QPalette::Base, "#2d2d2d");
+    _codeBlockCpp->setPalette(p);
+}
+
 /// Methods
 
 void MainWindow::updateCode(){
-    *_generatedCode = "";
-
     if (_classNameEdit->text() != ""){ // Primary condition
+        updateCodeHeader();
+        updateCodeCpp();
+    }
+}
 
-        // Documentation
-        *_generatedCode += "/*\n   " + (_authorEdit->text() != "" ? ("Author: " + _authorEdit->text() + "\n   ") : "") +
-            ("date: " + _dateEdit->date().toString()) +
-            (_roleEdit->toPlainText() != "" ? ("\n   " + _roleEdit->toPlainText() + "\n */\n\n") : "\n */\n\n");
+void MainWindow::updateCodeHeader(){
+    // Header
+    *_generatedCodeHeader = "";
 
-        // Header Inclusion Start
-        if (_headerIncCheckbox->isChecked()) {
-            *_generatedCode += ("#ifndef  " + _classNameEdit->text().toUpper()) +
-                ("_H_INCLUDED\n#define " + _classNameEdit->text().toUpper()) +
-                ("_H_INCLUDED\n\n");
-        }
+    // Documentation
+    *_generatedCodeHeader += "/*\n   " + (_authorEdit->text() != "" ? ("Author: " + _authorEdit->text() + "\n   ") : "") +
+        ("date: " + _dateEdit->date().toString()) +
+        (_roleEdit->toPlainText() != "" ? ("\n   " + _roleEdit->toPlainText() + "\n */\n\n") : "\n */\n\n");
 
-        // Class start
-        *_generatedCode += "class " + _classNameEdit->text() +
-                (_parentNameEdit->text() != "" ? (" : public " + _parentNameEdit->text() + " ") : " ") +
-                ("{\n\n");
-
-        // Constructor
-        *_generatedCode += "    public:\n";
-
-        if (_constructorCheckbox->isChecked()) {
-            *_generatedCode += "    " + _classNameEdit->text() + "();\n";
-        }
-
-        // Destructor
-        if (_destructorCheckbox->isChecked()) {
-            *_generatedCode += "    ~" + _classNameEdit->text() + "();\n";
-        }
-
-        *_generatedCode += "\n";
-
-        // Class end
-        *_generatedCode += "    protected:\n\n    private:\n\n}\n\n";
-
-        // Header Inclusion End
-        if (_headerIncCheckbox->isChecked())
-            *_generatedCode += "#endif";
-
+    // Header Inclusion Start
+    if (_headerIncCheckbox->isChecked()) {
+        *_generatedCodeHeader += ("#ifndef " + _classNameEdit->text().toUpper()) +
+            ("_H_INCLUDED\n#define " + _classNameEdit->text().toUpper()) +
+            ("_H_INCLUDED\n\n");
     }
 
-    _codeBlock->setText(*_generatedCode);
+    // Class start
+    *_generatedCodeHeader += "class " + _classNameEdit->text() +
+            (_parentNameEdit->text() != "" ? (" : public " + _parentNameEdit->text() + " ") : " ") +
+            ("{\n\n");
+
+    // Constructor
+    *_generatedCodeHeader += "    public:\n";
+
+    if (_constructorCheckbox->isChecked()) {
+        *_generatedCodeHeader += "    " + _classNameEdit->text() + "();\n";
+    }
+
+    // Destructor
+    if (_destructorCheckbox->isChecked()) {
+        *_generatedCodeHeader += "    ~" + _classNameEdit->text() + "();\n";
+    }
+
+    *_generatedCodeHeader += "\n";
+
+    // Class end
+    *_generatedCodeHeader += "    protected:\n\n    private:\n\n}\n\n";
+
+    // Header Inclusion End
+    if (_headerIncCheckbox->isChecked())
+        *_generatedCodeHeader += "#endif";
+
+    _codeBlockHeader->setText(*_generatedCodeHeader);
+}
+
+void MainWindow::updateCodeCpp(){
+
+    QString classname = _classNameEdit->text();
+
+    *_generatedCodeCpp = ""; // reset
+
+    *_generatedCodeCpp += "#include \"" +classname + ".h\"\n\n";
+
+    if (_constructorCheckbox->isChecked()){
+        *_generatedCodeCpp += classname + "::" + classname + "() {\n\n}\n\n";
+    }
+
+    if (_destructorCheckbox->isChecked()){
+        *_generatedCodeCpp += classname + "::~" + classname + "() {\n\n}\n\n";
+    }
+
+    _codeBlockCpp->setText(*_generatedCodeCpp);
+}
+
+void MainWindow::saveFiles(){
+    if (_classNameEdit->text() != ""){
+        QString folderPath = QFileDialog::getExistingDirectory(this);
+        QString filenameh   = _classNameEdit->text() + ".h";
+        QString filenamecpp = _classNameEdit->text() + ".cpp";
+
+        std::ofstream fileh;
+        fileh.open((folderPath + "/" + filenameh).toStdString(), std::ofstream::app);
+        std::ofstream filecpp;
+        filecpp.open((folderPath + "/" + filenamecpp).toStdString(), std::ofstream::app);
+
+        if (fileh && filecpp){
+            fileh << _generatedCodeHeader->toStdString();
+            filecpp << _generatedCodeCpp->toStdString();
+
+            fileh.close();
+            filecpp.close();
+
+            QMessageBox::information(this, "Save success", "Your files have been successfully created");
+        } else {
+            QMessageBox::critical(this, "Unexpected error", "Sorry, there have been an error during the file saving process. Try again.");
+        }
+    } else {
+        QMessageBox::critical(this, "Save error", "You didn't give any classname.");
+    }
 }
