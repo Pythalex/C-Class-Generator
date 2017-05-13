@@ -1,6 +1,6 @@
 # C++ Class Generator
 
-This project is a result of an exercice from C++ Tutorial available on [OpenClassrooms](https://openclassrooms.com/courses/programmez-avec-le-langage-c/tp-zeroclassgenerator) website.
+This project is a result of an exercise from C++ Tutorial available on [OpenClassrooms](https://openclassrooms.com/courses/programmez-avec-le-langage-c/tp-zeroclassgenerator) website.
 The project is written in Qt 5.8 and you will need it to compile the project. Basically just create a project with Qt Creator with Qt 5.8. <br/>
 
 ### What is it ?
