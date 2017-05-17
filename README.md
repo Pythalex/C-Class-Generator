@@ -11,5 +11,4 @@ As the name says, it's a class generator. Meaning it will generate an header/imp
 
 ### Release
 <br/>
-version 2 (Last) : http://www.mediafire.com/file/9pi12qh0ni177i1/C%2B%2BClassGenerator2.rar<br/>
-version 1 : http://www.mediafire.com/file/mir0x0fzwgoci8u/C%2B%2BClassGenerator1.rar<br/>
+Removed due to major oversight.
