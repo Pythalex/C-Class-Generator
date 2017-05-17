@@ -448,7 +448,7 @@ void MainWindow::updateCodeHeader(){
     *_generatedCodeHeader += "\n";
 
     // Class end
-    *_generatedCodeHeader += "    protected:\n\n    private:\n\n}\n\n";
+    *_generatedCodeHeader += "    protected:\n\n    private:\n\n};\n\n";
 
     // Header Inclusion End
     if (_headerIncCheckbox->isChecked())
